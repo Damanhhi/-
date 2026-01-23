@@ -1,0 +1,180 @@
+--[[
+    ULTIMATE TOOL: FREEZE + ESP + BRING
+    Tác giả: Gemini AI
+    
+    Chức năng:
+    1. Freeze All: Đóng băng người chơi khác.
+    2. ESP: Nhìn xuyên tường.
+    3. Bring All: Kéo tất cả người đang bị đóng băng về vị trí của bạn.
+]]--
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+local LocalPlayer = Players.LocalPlayer
+
+-- // CẤU HÌNH //
+local FreezeEnabled = false
+local ESPEnabled = false
+local SavedPositions = {} -- Bảng lưu tọa độ đóng băng
+
+-- // 1. GIAO DIỆN (UI) //
+local ScreenGui = Instance.new("ScreenGui")
+if pcall(function() ScreenGui.Parent = CoreGui end) then
+    ScreenGui.Parent = CoreGui
+else
+    ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+end
+ScreenGui.Name = "GeminiUltraGUI"
+
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 200, 0, 150) -- Tăng chiều cao để chứa 3 nút
+MainFrame.Position = UDim2.new(0, 50, 0, 50)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true 
+
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 8)
+
+-- Tiêu đề
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, 0, 0, 25)
+Title.BackgroundTransparency = 1
+Title.Text = "Gemini Hub v2"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 16
+
+-- Nút Freeze (Đóng băng)
+local FreezeBtn = Instance.new("TextButton", MainFrame)
+FreezeBtn.Size = UDim2.new(0, 180, 0, 30)
+FreezeBtn.Position = UDim2.new(0, 10, 0, 30)
+FreezeBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+FreezeBtn.Text = "Freeze All: OFF"
+FreezeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+FreezeBtn.Font = Enum.Font.SourceSansBold
+Instance.new("UICorner", FreezeBtn).CornerRadius = UDim.new(0, 6)
+
+-- Nút ESP (Nhìn xuyên)
+local ESPBtn = Instance.new("TextButton", MainFrame)
+ESPBtn.Size = UDim2.new(0, 180, 0, 30)
+ESPBtn.Position = UDim2.new(0, 10, 0, 70)
+ESPBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+ESPBtn.Text = "ESP: OFF"
+ESPBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ESPBtn.Font = Enum.Font.SourceSansBold
+Instance.new("UICorner", ESPBtn).CornerRadius = UDim.new(0, 6)
+
+-- Nút Bring (Kéo về)
+local BringBtn = Instance.new("TextButton", MainFrame)
+BringBtn.Size = UDim2.new(0, 180, 0, 30)
+BringBtn.Position = UDim2.new(0, 10, 0, 110)
+BringBtn.BackgroundColor3 = Color3.fromRGB(255, 100, 0) -- Màu cam nổi bật
+BringBtn.Text = "BRING ALL TO ME"
+BringBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+BringBtn.Font = Enum.Font.SourceSansBold
+Instance.new("UICorner", BringBtn).CornerRadius = UDim.new(0, 6)
+
+
+-- // 2. LOGIC FREEZE & BRING //
+RunService.RenderStepped:Connect(function()
+    if not FreezeEnabled then return end
+
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            local root = player.Character:FindFirstChild("HumanoidRootPart")
+            local hum = player.Character:FindFirstChild("Humanoid")
+            
+            if root and hum and hum.Health > 0 then
+                -- Nếu chưa có vị trí lưu, lưu vị trí hiện tại của họ
+                if not SavedPositions[player] then
+                    SavedPositions[player] = root.CFrame
+                end
+                
+                -- Liên tục ép họ về vị trí đã lưu trong bảng SavedPositions
+                root.CFrame = SavedPositions[player]
+                root.Velocity = Vector3.new(0,0,0)
+                root.RotVelocity = Vector3.new(0,0,0)
+            else
+                SavedPositions[player] = nil
+            end
+        end
+    end
+end)
+
+-- // 3. LOGIC ESP //
+local function UpdateESP()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character then
+            if ESPEnabled then
+                if not player.Character:FindFirstChild("GeminiHighlight") then
+                    local hl = Instance.new("Highlight", player.Character)
+                    hl.Name = "GeminiHighlight"
+                    hl.FillColor = Color3.fromRGB(255, 0, 0)
+                    hl.OutlineColor = Color3.fromRGB(255, 255, 255)
+                end
+            else
+                if player.Character:FindFirstChild("GeminiHighlight") then
+                    player.Character.GeminiHighlight:Destroy()
+                end
+            end
+        end
+    end
+end
+RunService.RenderStepped:Connect(UpdateESP)
+
+-- // 4. SỰ KIỆN NÚT BẤM //
+
+-- Nút Freeze
+FreezeBtn.MouseButton1Click:Connect(function()
+    FreezeEnabled = not FreezeEnabled
+    SavedPositions = {} -- Reset
+    
+    if FreezeEnabled then
+        FreezeBtn.Text = "Freeze All: ON"
+        FreezeBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+    else
+        FreezeBtn.Text = "Freeze All: OFF"
+        FreezeBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    end
+end)
+
+-- Nút ESP
+ESPBtn.MouseButton1Click:Connect(function()
+    ESPEnabled = not ESPEnabled
+    if ESPEnabled then
+        ESPBtn.Text = "ESP: ON"
+        ESPBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+    else
+        ESPBtn.Text = "ESP: OFF"
+        ESPBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    end
+end)
+
+-- Nút Bring (Kéo về)
+BringBtn.MouseButton1Click:Connect(function()
+    -- Chỉ hoạt động khi đang bật chế độ Freeze
+    if not FreezeEnabled then 
+        BringBtn.Text = "Enable Freeze First!"
+        wait(1)
+        BringBtn.Text = "BRING ALL TO ME"
+        return 
+    end
+
+    local myChar = LocalPlayer.Character
+    if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+        local myPos = myChar.HumanoidRootPart.CFrame
+        
+        -- Dịch chuyển điểm lưu của tất cả mọi người về trước mặt bạn 3 stud
+        for player, _ in pairs(SavedPositions) do
+            -- Cộng thêm CFrame.new(0, 0, -3) để họ đứng trước mặt, không bị kẹt vào người bạn
+            SavedPositions[player] = myPos * CFrame.new(0, 0, -5)
+        end
+    end
+end)
+
+-- Dọn dẹp
+Players.PlayerRemoving:Connect(function(player)
+    SavedPositions[player] = nil
+end)
