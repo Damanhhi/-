@@ -1,0 +1,414 @@
+local player = game.Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+local HttpService = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
+
+local teleportPoints = {}
+local teleportOrder = {}
+local auto = false
+local currentIndex = 1
+local FOLDER_NAME = "TeleportConfigs"
+local pendingTeleportPos = nil -- Stores position waiting for void confirmation
+
+-- Create folder if it doesn't exist
+if makefolder and not isfolder(FOLDER_NAME) then
+	makefolder(FOLDER_NAME)
+end
+
+local old = player:WaitForChild("PlayerGui"):FindFirstChild("TeleportGUI")
+if old then old:Destroy() end
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "TeleportGUI"
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
+
+-- === DRAGGABLE FUNCTION ===
+local function makeDraggable(obj)
+	local dragging, dragInput, dragStart, startPos
+	obj.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = obj.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then dragging = false end
+			end)
+		end
+	end)
+	obj.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			local delta = input.Position - dragStart
+			obj.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		end
+	end)
+end
+
+-- === TOGGLE BUTTON (DRAGGABLE) ===
+local hideBtn = Instance.new("TextButton", gui)
+hideBtn.Size = UDim2.new(0, 40, 0, 40)
+hideBtn.Position = UDim2.new(0.02, 0, 0.4, 0)
+hideBtn.Text = "👁️"
+hideBtn.Font = Enum.Font.GothamBold
+hideBtn.TextSize = 22
+hideBtn.TextColor3 = Color3.new(1, 1, 1)
+hideBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+Instance.new("UICorner", hideBtn).CornerRadius = UDim.new(1, 0)
+makeDraggable(hideBtn)
+
+-- === MAIN FRAME ===
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 230, 0, 320)
+frame.Position = UDim2.new(0.35, 0, 0.35, 0)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.BorderSizePixel = 0
+frame.Active = true
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
+makeDraggable(frame)
+
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, -10, 0, 30)
+title.Position = UDim2.new(0, 10, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "Teleport Manager"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 14
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+-- === SCROLLING LIST ===
+local scroll = Instance.new("ScrollingFrame", frame)
+scroll.Position = UDim2.new(0, 10, 0, 35)
+scroll.Size = UDim2.new(1, -20, 0, 150)
+scroll.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+scroll.BorderSizePixel = 0
+scroll.ScrollBarThickness = 3
+Instance.new("UICorner", scroll).CornerRadius = UDim.new(0, 6)
+
+local layout = Instance.new("UIListLayout", scroll)
+layout.Padding = UDim.new(0, 4)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+-- === CONTROL BUTTONS ===
+local createBtn = Instance.new("TextButton", frame)
+createBtn.Size = UDim2.new(0.32, 0, 0, 25)
+createBtn.Position = UDim2.new(0.05, 0, 0.63, 0)
+createBtn.Text = "➕ Add"
+createBtn.Font = Enum.Font.GothamBold
+createBtn.TextColor3 = Color3.new(1, 1, 1)
+createBtn.BackgroundColor3 = Color3.fromRGB(60, 120, 60)
+createBtn.TextSize = 12
+Instance.new("UICorner", createBtn).CornerRadius = UDim.new(0, 6)
+
+local speedBox = Instance.new("TextBox", frame)
+speedBox.Size = UDim2.new(0.20, 0, 0, 25)
+speedBox.Position = UDim2.new(0.39, 0, 0.63, 0)
+speedBox.Text = "0.1"
+speedBox.PlaceholderText = "sec"
+speedBox.Font = Enum.Font.GothamBold
+speedBox.TextColor3 = Color3.new(1,1,1)
+speedBox.BackgroundColor3 = Color3.fromRGB(60, 60, 65)
+speedBox.TextSize = 12
+Instance.new("UICorner", speedBox).CornerRadius = UDim.new(0, 6)
+
+local autoBtn = Instance.new("TextButton", frame)
+autoBtn.Size = UDim2.new(0.34, 0, 0, 25)
+autoBtn.Position = UDim2.new(0.61, 0, 0.63, 0)
+autoBtn.Text = "Auto: OFF"
+autoBtn.Font = Enum.Font.GothamBold
+autoBtn.TextColor3 = Color3.new(1, 1, 1)
+autoBtn.BackgroundColor3 = Color3.fromRGB(120, 60, 60)
+autoBtn.TextSize = 11
+Instance.new("UICorner", autoBtn).CornerRadius = UDim.new(0, 6)
+
+local fileNameBox = Instance.new("TextBox", frame)
+fileNameBox.Size = UDim2.new(0.9, 0, 0, 25)
+fileNameBox.Position = UDim2.new(0.05, 0, 0.73, 0)
+fileNameBox.PlaceholderText = "Enter config name..."
+fileNameBox.Text = ""
+fileNameBox.Font = Enum.Font.Gotham
+fileNameBox.TextSize = 13
+fileNameBox.TextColor3 = Color3.new(1,1,1)
+fileNameBox.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+Instance.new("UICorner", fileNameBox).CornerRadius = UDim.new(0, 6)
+
+local saveFileBtn = Instance.new("TextButton", frame)
+saveFileBtn.Size = UDim2.new(0.48, 0, 0, 25)
+saveFileBtn.Position = UDim2.new(0.05, 0, 0.83, 0)
+saveFileBtn.Text = "💾 Save File"
+saveFileBtn.Font = Enum.Font.GothamBold
+saveFileBtn.TextColor3 = Color3.new(1, 1, 1)
+saveFileBtn.BackgroundColor3 = Color3.fromRGB(60, 90, 130)
+saveFileBtn.TextSize = 12
+Instance.new("UICorner", saveFileBtn).CornerRadius = UDim.new(0, 6)
+
+local loadMenuBtn = Instance.new("TextButton", frame)
+loadMenuBtn.Size = UDim2.new(0.40, 0, 0, 25)
+loadMenuBtn.Position = UDim2.new(0.55, 0, 0.83, 0)
+loadMenuBtn.Text = "📂 Load File"
+loadMenuBtn.Font = Enum.Font.GothamBold
+loadMenuBtn.TextColor3 = Color3.new(1, 1, 1)
+loadMenuBtn.BackgroundColor3 = Color3.fromRGB(130, 90, 60)
+loadMenuBtn.TextSize = 12
+Instance.new("UICorner", loadMenuBtn).CornerRadius = UDim.new(0, 6)
+
+-- === VOID WARNING POPUP ===
+local alertFrame = Instance.new("Frame", frame)
+alertFrame.Size = UDim2.new(1, 0, 1, 0)
+alertFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+alertFrame.BackgroundTransparency = 0.2
+alertFrame.Visible = false
+alertFrame.ZIndex = 20
+Instance.new("UICorner", alertFrame).CornerRadius = UDim.new(0, 10)
+
+local alertBox = Instance.new("Frame", alertFrame)
+alertBox.Size = UDim2.new(0.9, 0, 0.45, 0)
+alertBox.Position = UDim2.new(0.05, 0, 0.275, 0)
+alertBox.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
+alertBox.ZIndex = 21
+Instance.new("UICorner", alertBox).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", alertBox).Color = Color3.fromRGB(255, 50, 50)
+
+local alertTitle = Instance.new("TextLabel", alertBox)
+alertTitle.Size = UDim2.new(1, 0, 0.3, 0)
+alertTitle.Text = "⚠️ VOID WARNING ⚠️"
+alertTitle.Font = Enum.Font.GothamBold
+alertTitle.TextColor3 = Color3.fromRGB(255, 50, 50)
+alertTitle.TextSize = 14
+alertTitle.BackgroundTransparency = 1
+alertTitle.ZIndex = 22
+
+local alertDesc = Instance.new("TextLabel", alertBox)
+alertDesc.Size = UDim2.new(1, -20, 0.3, 0)
+alertDesc.Position = UDim2.new(0, 10, 0.3, 0)
+alertDesc.Text = "This point is above the void!\nDo you still want to teleport?"
+alertDesc.Font = Enum.Font.Gotham
+alertDesc.TextColor3 = Color3.new(1, 1, 1)
+alertDesc.TextSize = 11
+alertDesc.TextWrapped = true
+alertDesc.BackgroundTransparency = 1
+alertDesc.ZIndex = 22
+
+local confirmYes = Instance.new("TextButton", alertBox)
+confirmYes.Size = UDim2.new(0.4, 0, 0.25, 0)
+confirmYes.Position = UDim2.new(0.05, 0, 0.65, 0)
+confirmYes.Text = "Teleport 💀"
+confirmYes.BackgroundColor3 = Color3.fromRGB(180, 50, 50)
+confirmYes.TextColor3 = Color3.new(1,1,1)
+confirmYes.Font = Enum.Font.GothamBold
+confirmYes.TextSize = 11
+confirmYes.ZIndex = 22
+Instance.new("UICorner", confirmYes).CornerRadius = UDim.new(0, 6)
+
+local confirmNo = Instance.new("TextButton", alertBox)
+confirmNo.Size = UDim2.new(0.4, 0, 0.25, 0)
+confirmNo.Position = UDim2.new(0.55, 0, 0.65, 0)
+confirmNo.Text = "Cancel ❌"
+confirmNo.BackgroundColor3 = Color3.fromRGB(60, 180, 80)
+confirmNo.TextColor3 = Color3.new(1,1,1)
+confirmNo.Font = Enum.Font.GothamBold
+confirmNo.TextSize = 11
+confirmNo.ZIndex = 22
+Instance.new("UICorner", confirmNo).CornerRadius = UDim.new(0, 6)
+
+-- === LOAD FILE POPUP ===
+local loadFrame = Instance.new("Frame", frame)
+loadFrame.Size = UDim2.new(1, -10, 1, -40)
+loadFrame.Position = UDim2.new(0, 5, 0, 35)
+loadFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+loadFrame.Visible = false
+loadFrame.ZIndex = 10
+Instance.new("UICorner", loadFrame).CornerRadius = UDim.new(0, 8)
+
+local closeLoadBtn = Instance.new("TextButton", loadFrame)
+closeLoadBtn.Size = UDim2.new(0, 20, 0, 20)
+closeLoadBtn.Position = UDim2.new(1, -25, 0, 5)
+closeLoadBtn.Text = "X"
+closeLoadBtn.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
+closeLoadBtn.TextColor3 = Color3.new(1, 1, 1)
+closeLoadBtn.Font = Enum.Font.GothamBold
+closeLoadBtn.ZIndex = 11
+Instance.new("UICorner", closeLoadBtn).CornerRadius = UDim.new(0, 4)
+
+local fileListScroll = Instance.new("ScrollingFrame", loadFrame)
+fileListScroll.Size = UDim2.new(1, -10, 1, -30)
+fileListScroll.Position = UDim2.new(0, 5, 0, 25)
+fileListScroll.BackgroundTransparency = 1
+fileListScroll.BorderSizePixel = 0
+fileListScroll.ZIndex = 11
+Instance.new("UIListLayout", fileListScroll).Padding = UDim.new(0, 4)
+
+-- === LOGIC ===
+
+local function updateScroll()
+	local total = 0
+	for _, child in ipairs(scroll:GetChildren()) do if child:IsA("Frame") then total += 32 end end
+	scroll.CanvasSize = UDim2.new(0,0,0,total)
+end
+
+local function isSafe(targetPos)
+	local rayOrigin = targetPos
+	local rayDirection = Vector3.new(0, -50, 0)
+	local params = RaycastParams.new()
+	params.FilterDescendantsInstances = {player.Character}
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	local result = workspace:Raycast(rayOrigin, rayDirection, params)
+	return result ~= nil
+end
+
+local function teleport(pos)
+	if player.Character then player.Character:PivotTo(CFrame.new(pos)) end
+end
+
+local function createPointButton(name, pos)
+	local holder = Instance.new("Frame", scroll)
+	holder.Size = UDim2.new(1,-6,0,28)
+	holder.BackgroundColor3 = Color3.fromRGB(45,45,45)
+	Instance.new("UICorner", holder).CornerRadius = UDim.new(0,5)
+
+	local btn = Instance.new("TextButton", holder)
+	btn.Size = UDim2.new(0.75,0,1,0)
+	btn.BackgroundTransparency = 1
+	btn.Text = "  " .. name
+	btn.TextXAlignment = Enum.TextXAlignment.Left
+	btn.Font = Enum.Font.GothamSemibold
+	btn.TextColor3 = Color3.new(1,1,1)
+	btn.TextSize = 12
+
+	local del = Instance.new("TextButton", holder)
+	del.Size = UDim2.new(0,20,0,20)
+	del.Position = UDim2.new(1,-25,0.15,0)
+	del.Text = "×"
+	del.BackgroundColor3 = Color3.fromRGB(150,50,50)
+	del.Font = Enum.Font.GothamBold
+	del.TextColor3 = Color3.new(1,1,1)
+	Instance.new("UICorner", del).CornerRadius = UDim.new(0,4)
+
+	btn.MouseButton1Click:Connect(function()
+		if isSafe(pos) then
+			teleport(pos)
+		else
+			pendingTeleportPos = pos
+			alertFrame.Visible = true
+		end
+	end)
+
+	del.MouseButton1Click:Connect(function()
+		teleportPoints[name] = nil
+		for i, n in ipairs(teleportOrder) do if n == name then table.remove(teleportOrder, i) break end end
+		holder:Destroy()
+		updateScroll()
+	end)
+	updateScroll()
+end
+
+confirmYes.MouseButton1Click:Connect(function()
+	if pendingTeleportPos then teleport(pendingTeleportPos) end
+	alertFrame.Visible = false
+	pendingTeleportPos = nil
+end)
+
+confirmNo.MouseButton1Click:Connect(function()
+	alertFrame.Visible = false
+	pendingTeleportPos = nil
+end)
+
+createBtn.MouseButton1Click:Connect(function()
+	if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+		local pos = player.Character.HumanoidRootPart.Position
+		local name = "Point " .. (#teleportOrder + 1)
+		teleportPoints[name] = pos
+		table.insert(teleportOrder, name)
+		createPointButton(name, pos)
+	end
+end)
+
+saveFileBtn.MouseButton1Click:Connect(function()
+	local name = fileNameBox.Text
+	if name == "" then
+		saveFileBtn.Text = "❌ No Name"
+		task.wait(1)
+		saveFileBtn.Text = "💾 Save File"
+		return
+	end
+	local data = {}
+	for _, pName in ipairs(teleportOrder) do
+		local vec = teleportPoints[pName]
+		table.insert(data, {Name = pName, X = vec.X, Y = vec.Y, Z = vec.Z})
+	end
+	if writefile then
+		writefile(FOLDER_NAME .. "/" .. name .. ".json", HttpService:JSONEncode(data))
+		saveFileBtn.Text = "✅ Saved"
+		task.wait(1)
+		saveFileBtn.Text = "💾 Save File"
+	end
+end)
+
+loadMenuBtn.MouseButton1Click:Connect(function()
+	loadFrame.Visible = true
+	for _, v in pairs(fileListScroll:GetChildren()) do if v:IsA("TextButton") then v:Destroy() end end
+	if listfiles then
+		local files = listfiles(FOLDER_NAME)
+		for _, filePath in pairs(files) do
+			local fileName = string.match(filePath, "[^/\\]+$")
+			local btn = Instance.new("TextButton", fileListScroll)
+			btn.Size = UDim2.new(1, -5, 0, 25)
+			btn.Text = fileName
+			btn.BackgroundColor3 = Color3.fromRGB(60, 65, 75)
+			btn.TextColor3 = Color3.new(1,1,1)
+			btn.Font = Enum.Font.Gotham
+			btn.TextSize = 12
+			btn.ZIndex = 12
+			Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 4)
+			btn.MouseButton1Click:Connect(function()
+				local content = readfile(filePath)
+				local success, decoded = pcall(function() return HttpService:JSONDecode(content) end)
+				if success then
+					for _, child in pairs(scroll:GetChildren()) do if child:IsA("Frame") then child:Destroy() end end
+					teleportPoints = {} teleportOrder = {}
+					for _, item in ipairs(decoded) do
+						local vec = Vector3.new(item.X, item.Y, item.Z)
+						teleportPoints[item.Name] = vec
+						table.insert(teleportOrder, item.Name)
+						createPointButton(item.Name, vec)
+					end
+					loadFrame.Visible = false
+				end
+			end)
+		end
+		fileListScroll.CanvasSize = UDim2.new(0,0,0, #files * 29)
+	end
+end)
+
+closeLoadBtn.MouseButton1Click:Connect(function() loadFrame.Visible = false end)
+
+task.spawn(function()
+	while true do
+		local delayTime = tonumber(speedBox.Text) or 0.1
+		if auto and #teleportOrder > 0 and player.Character then
+			local name = teleportOrder[currentIndex]
+			if teleportPoints[name] then teleport(teleportPoints[name]) end
+			currentIndex = currentIndex + 1
+			if currentIndex > #teleportOrder then currentIndex = 1 end
+		end
+		task.wait(delayTime)
+	end
+end)
+
+autoBtn.MouseButton1Click:Connect(function()
+	auto = not auto
+	autoBtn.Text = auto and "Auto: ON" or "Auto: OFF"
+	autoBtn.BackgroundColor3 = auto and Color3.fromRGB(60,120,60) or Color3.fromRGB(120,60,60)
+end)
+
+local guiVisible = true
+hideBtn.MouseButton1Click:Connect(function()
+	guiVisible = not guiVisible
+	frame.Visible = guiVisible
+	hideBtn.Text = guiVisible and "👁️" or "🙈"
+end)
