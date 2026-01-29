@@ -1,116 +1,129 @@
-                                                                                 local TweenService=   
-                                                                        game:GetService("TweenService");local Debris=   
-                                                                    game:GetService("Debris");local Players=game:GetService(      
-                                                                "Players");local SoundService=game:GetService("SoundService");local     
-                                                            LocalizationService=game:GetService("LocalizationService");local Player=      
-                                                          Players.LocalPlayer;local PlayerGui=Player:WaitForChild("PlayerGui");local        
-                                                        quotesVN={"Anh khĂ´ng giá»i Ä‘á»‹a lĂ½, nhÆ°ng anh biáº¿t vá»‹ trĂ­ cá»§a em lĂ  á»Ÿ trong tim anh.",  
-                                                      "Trá»i Ä‘á»• mÆ°a rá»“i, sao em chÆ°a Ä‘á»• anh?","Em cĂ³ báº£n Ä‘á»“ khĂ´ng? Anh bá»‹ láº¡c trong máº¯t em rá»“i." 
-                                                    ,"Gá»i em lĂ  Google, vĂ¬ em cĂ³ má»i thá»© anh tĂ¬m kiáº¿m.",                                          
-                                                  "Anh nghiá»‡n thuá»‘c cĂ³ thá»ƒ cai, nhÆ°ng nghiá»‡n em thĂ¬ khĂ´ng thá»ƒ chá»¯a.",                               
-                                                  "Muá»‘n Äƒn gáº¡o thĂ¬ trá»“ng lĂºa, muá»‘n cĂ³ cĂ´ng chĂºa thĂ¬ yĂªu em.",                                         
-                                                "Em giá»‘ng nhÆ° má»™t ly cĂ  phĂª, vá»«a Ä‘áº¯ng vá»«a ngá»t khiáº¿n anh máº¥t ngá»§.",                                     
-                                                "TrÄƒng lĂªn Ä‘á»‰nh nĂºi trÄƒng tĂ , em yĂªu anh tháº­t hay lĂ  yĂªu chÆ¡i?",                                          
-                                              "Dá»± bĂ¡o thá»i tiáº¿t nĂ³i hĂ´m nay trá»i Ä‘áº¹p, nhÆ°ng khĂ´ng Ä‘áº¹p báº±ng ná»¥ cÆ°á»i cá»§a em.",                                
-                                              "Anh há»c ráº¥t nhiá»u Ä‘iá»u, nhÆ°ng chÆ°a há»c cĂ¡ch ngá»«ng nhá»› em.",                                                  
-                                            "Muá»‘n báº¯t cá»p thĂ¬ vĂ o sá»Ÿ thĂº, muá»‘n tĂ¬m chá»— trĂº thĂ¬ vĂ o tim anh.",                                                 
-                                            "NhĂ  em cĂ³ bĂ¡n rÆ°á»£u khĂ´ng? MĂ  nĂ³i chuyá»‡n vá»›i em anh say quĂ¡.","Äá»«ng cÆ°á»i ná»¯a, tim anh Ä‘áº­p nhanh láº¯m rá»“i.",          
-                                          "Náº¿u em lĂ  má»™t bĂ i hĂ¡t, anh sáº½ nghe Ä‘i nghe láº¡i cáº£ ngĂ y.","Tháº¿ giá»›i nĂ y to lá»›n tháº¿, Ä‘i Ä‘Ă¢u cÅ©ng tháº¥y bĂ³ng dĂ¡ng em.",    
-                                          "Em Æ¡i giĂ³ láº¡nh gáº§n ká», bao nhiĂªu lá»›p Ă¡o khĂ´ng báº±ng love anh.",                                                           
-                                          "Anh xin Ä‘áº§u hĂ ng, vĂ¬ ná»¥ cÆ°á»i cá»§a em lĂ  vÅ© khĂ­ sĂ¡t thÆ°Æ¡ng cao nháº¥t.",                                                       
-                                          "Em cĂ³ tháº¥y má»i chĂ¢n khĂ´ng? VĂ¬ em cháº¡y trong Ä‘áº§u anh cáº£ ngĂ y rá»“i.","Em lĂ  Ä‘Ă¡m mĂ¢y nhá», trĂªn báº§u trá»i to cá»§a anh.",          
-                                        "Anh khĂ´ng thĂ­ch cáº¡nh tranh, nhÆ°ng náº¿u lĂ  em thĂ¬ anh sáº½ chiáº¿n Ä‘áº¥u.","TrĂ¡i Ä‘áº¥t quay quanh máº·t trá»i, cĂ²n anh quay quanh em.",     
-                                                                                                              --[[==============================]]                        
-                                                                                                    --[[============================================]]                    
-                                                                                                --[[======================================================]]                
-                                                                                            --[[==========================================================]]                  
-                                                                                          --[[==============================================================]]                
-                                                                                          --[[================================================================]]                
-                                                                                          --[[==================================================================]]              
-                                                                                          --[[==================================================================]]                  
-                                                                                          --[[====================================================================]]              
-                                                                                          --[[====================================================================]]                
-                                                                                          --[[======================================================================]]              
-            "Anh thĂ  lĂ m má»™t ngÆ°á»i bĂ¬nh thÆ°á»ng bĂªn em, cĂ²n hÆ¡n lĂ m vua má»™t cĂµi thiáº¿u em." --[[======================================================================]],             
-          "Äá»«ng Ä‘i tĂ¬m háº¡nh phĂºc xa xĂ´i, anh á»Ÿ ngay Ä‘Ă¢y rá»“i.",                            --[[======================================================================]]              
-        "MÆ°á»£n xe nhá»› Ä‘á»• Ä‘áº§y bĂ¬nh, mÆ°á»£n tim nhá»› Ä‘á»• Ä‘áº§y tĂ¬nh cho anh.",                     --[[======================================================================]]              
-        "YĂªu em khĂ´ng pháº£i lĂ  sai, mĂ  lĂ  bĂ i toĂ¡n anh giáº£i cáº£ Ä‘á»i.",                      --[[======================================================================]]              
-      "Em lĂ  máº£nh ghĂ©p cuá»‘i cĂ¹ng anh cĂ²n thiáº¿u.",                                         --[[======================================================================]]              
-      "Thá»©c khuya lĂ  vĂ¬ cĂ´ng viá»‡c, nhÆ°ng máº¥t ngá»§ lĂ  vĂ¬ nhá»› em.",                            --[[==================================================================]]                
-      "Anh khĂ´ng há»©a sáº½ sang giĂ u, nhÆ°ng há»©a sáº½ yĂªu em bá»n lĂ¢u.",                           --[[================================================================]]                  
-    "Em lĂ  nguá»“n Ä‘á»™ng lá»±c lá»›n nháº¥t Ä‘á»ƒ anh cá»‘ gáº¯ng má»—i ngĂ y.",                               --[[==============================================================]]                  
-    "CĂ³ ráº¥t nhiá»u cĂ¡ch Ä‘á»ƒ háº¡nh phĂºc, cĂ¡ch nhanh nháº¥t lĂ  nhĂ¬n tháº¥y em.",                       --[[==========================================================]]                    
-    "Anh khĂ´ng cáº§n cáº£ tháº¿ giá»›i yĂªu anh, anh chá»‰ cáº§n em thĂ´i.",                                  --[[====================================================]]                        
-    "Em lĂ  vĂ¬ sao sĂ¡ng nháº¥t trong Ä‘Ăªm tá»‘i cá»§a anh.",                                              --[[==============================================]]                          
-    "Anh muá»‘n má»i em Ä‘i Äƒn tá»‘i, thá»±c Ä‘Æ¡n lĂ ... anh.",                                                 --[[====================================]]                              
-    "Tim anh Ä‘ang báº­t Ä‘Ă¨n xanh, sao em mĂ£i Ä‘áº¡p phanh tháº¿ nĂ y?",                                           --[[========================]]                                      
-    "Anh khĂ´ng thĂ­ch trĂ  sá»¯a, anh thĂ­ch trĂ  trá»™n vĂ o tim em.","Em cĂ³ biáº¿t bÆ¡i khĂ´ng? Anh sáº¯p chĂ¬m trong Ă¡nh máº¯t em rá»“i.","Anh cĂ³ má»™t siĂªu nÄƒng lá»±c, Ä‘Ă³ lĂ  siĂªu thĂ­ch em.",  
-  "Gáº·p em lĂ  duyĂªn, yĂªu em lĂ  ná»£, cÆ°á»›i em lĂ  nghiá»‡p... tá»¥.","Em lĂ  ngá»n háº£i Ä‘Äƒng dáº«n lá»‘i con thuyá»n tĂ¬nh anh.",                                                           
-  "Em Æ¡i trĂ  sá»¯a pháº£i cĂ³ trĂ¢n chĂ¢u, Ä‘á»i anh pháº£i cĂ³ em Ä‘Ă¢u má»›i ngáº§u.","Thanh xuĂ¢n nhÆ° má»™t tĂ¡ch trĂ , cĂ³ em lĂ  Ä‘áº­m Ä‘Ă  hÆ°Æ¡ng vá»‹.",                                         
-  "Em lĂ  lĂ­ do khiáº¿n anh cáº§m Ä‘iá»‡n thoáº¡i má»—i sĂ¡ng.","YĂªu má»™t ngÆ°á»i khĂ´ng khĂ³, yĂªu em thĂ¬ anh nguyá»‡n lo.","Em lĂ  bĂ´ng hoa Ä‘áº¹p nháº¥t trong vÆ°á»n hoa Ä‘á»i anh.",                
-  "Anh khĂ´ng giá»i vÄƒn, nhÆ°ng táº£ vá» em thĂ¬ viáº¿t thĂ nh sĂ¡ch.","Em cĂ³ tháº¥y nĂ³ng khĂ´ng? VĂ¬ tim anh Ä‘ang chĂ¡y vĂ¬ em Ä‘áº¥y.",                                                     
-  "Náº¿u ná»¥ cÆ°á»i cá»§a em lĂ  Ă¡nh náº¯ng, thĂ¬ anh nguyá»‡n bá»‹ chĂ¡y náº¯ng cáº£ Ä‘á»i.","Anh khĂ´ng cáº§n quĂ , vĂ¬ cĂ³ em lĂ  mĂ³n quĂ  lá»›n nháº¥t rá»“i.",                                           
-  "TrÄƒm lá»‘i Ä‘i, chá»‰ muá»‘n má»™t lá»‘i vá», lĂ  vá» bĂªn em.","Em lĂ  cĂ´ gĂ¡i vĂ ng trong lĂ ng Ä‘Ă¡nh cáº¯p trĂ¡i tim anh.","Anh khĂ´ng biáº¿t trá»™m cáº¯p, nhÆ°ng anh muá»‘n Ä‘Ă¡nh cáº¯p trĂ¡i tim em." 
-  ,"Em lĂ  Ä‘á»‹nh má»‡nh cá»§a Ä‘á»i anh.","Anh muá»‘n cĂ¹ng em Ä‘i Ä‘áº¿n táº­n cĂ¹ng tháº¿ giá»›i.","Em lĂ  giáº¥c mÆ¡ Ä‘áº¹p nháº¥t anh khĂ´ng muá»‘n tá»‰nh dáº­y.","Anh khĂ´ng sá»£ ma, anh chá»‰ sá»£ máº¥t em.",   
-  "Em lĂ  liá»u thuá»‘c duy nháº¥t chá»¯a lĂ nh váº¿t thÆ°Æ¡ng lĂ²ng anh.","Em cÆ°á»i má»™t cĂ¡i, mĂ¹a xuĂ¢n quay vá».","Anh khĂ´ng cáº§n thiĂªn Ä‘Æ°á»ng, vĂ¬ bĂªn em Ä‘Ă£ lĂ  thiĂªn Ä‘Æ°á»ng.",              
-  "Em lĂ  ná»‘t nháº¡c vui trong báº£n nháº¡c buá»“n cá»§a anh.","TĂ¬nh yĂªu anh dĂ nh cho em nhÆ° sĂ³ng biá»ƒn, lĂºc dá»‹u Ăªm lĂºc dá»¯ dá»™i nhÆ°ng khĂ´ng bao giá» ngá»«ng.",                           
-  "Anh muá»‘n náº¯m tay em Ä‘i qua má»i bĂ£o giĂ´ng.","Em lĂ  cáº§u vá»“ng sau cÆ¡n mÆ°a cá»§a anh.","Anh khĂ´ng há»©a sáº½ khĂ´ng lĂ m em khĂ³c, nhÆ°ng há»©a sáº½ lau khĂ´ nÆ°á»›c máº¯t cho em.",          
-  "Em lĂ  viĂªn ngá»c quĂ½ giĂ¡ nháº¥t anh tĂ¬m tháº¥y.","Anh muá»‘n giĂ  Ä‘i cĂ¹ng em.","Em lĂ  hÆ¡i thá»Ÿ cá»§a anh.","TĂ¬nh yĂªu cá»§a chĂºng ta sáº½ Ä‘áº¹p nhÆ° má»™t cĂ¢u chuyá»‡n cá»• tĂ­ch.",            
-  "Anh nguyá»‡n lĂ m vá»‡ sÄ© báº£o vá»‡ em suá»‘t Ä‘á»i.","Em lĂ  táº¥t cáº£ nhá»¯ng gĂ¬ anh cáº§n.","Anh yĂªu em nhiá»u hÆ¡n lá»i nĂ³i.","Em lĂ  Ă¡nh sĂ¡ng dáº«n lá»‘i anh vá» nhĂ .",                         
-  "Anh muá»‘n má»—i sĂ¡ng thá»©c dáº­y Ä‘á»u tháº¥y em.","Em lĂ  mĂ³n quĂ  vĂ´ giĂ¡ thÆ°á»£ng Ä‘áº¿ ban táº·ng anh.","Anh sáº½ mĂ£i yĂªu em, dĂ¹ váº­t Ä‘á»•i sao dá»i.","Em lĂ  nhá»‹p Ä‘áº­p cá»§a trĂ¡i tim anh.",     
-  "Anh muá»‘n cĂ¹ng em giĂ  Ä‘i, nuĂ´i cĂ¡ vĂ  trá»“ng thĂªm rau.","Em lĂ  nĂ ng thÆ¡ trong má»i bĂ i thÆ¡ anh viáº¿t.","Anh yĂªu em tá»« cĂ¡i nhĂ¬n Ä‘áº§u tiĂªn vĂ  mĂ£i mĂ£i vá» sau.",                  
-  "Em lĂ  báº¿n Ä‘á»— bĂ¬nh yĂªn cá»§a Ä‘á»i anh.","Anh muá»‘n cĂ¹ng em viáº¿t nĂªn cĂ¢u chuyá»‡n tĂ¬nh Ä‘áº¹p nháº¥t.","Em lĂ  Ä‘iá»u tuyá»‡t vá»i nháº¥t anh tá»«ng cĂ³.",                                      
-  "Anh sáº½ luĂ´n á»Ÿ bĂªn em, dĂ¹ báº¥t cá»© chuyá»‡n gĂ¬ xáº£y ra.","Em lĂ  ngÆ°á»i náº¯m giá»¯ chĂ¬a khĂ³a trĂ¡i tim anh.","YĂªu em lĂ  Ä‘iá»u Ä‘Ăºng Ä‘áº¯n nháº¥t anh tá»«ng lĂ m.",                           
-  "Anh muá»‘n dĂ nh cáº£ pháº§n Ä‘á»i cĂ²n láº¡i Ä‘á»ƒ yĂªu em.","Em lĂ  tháº¿ giá»›i cá»§a anh."};local quotesEN={"I'm not a photographer, but I can picture us together.",                       
-  "Are you a magician? Because whenever I look at you, everyone else disappears.","Do you have a map? I keep getting lost in your eyes.",                                   
-  "Is your name Google? Because you have everything I've been searching for.","I seem to have lost my phone number. Can I have yours?",                                     
-  "Are you a campfire? Because you're hot and I want s'more.","Do you believe in love at first sight, or should I walk by again?",                                          
-  "If I could rearrange the alphabet, Iâ€™d put 'U' and 'I' together.","You must be a broom, â€˜cause you just swept me off my feet.",                                          
-  "Are you a time traveler? Because I see you in my future.","Your hand looks heavy. Can I hold it for you?","If kisses were snowflakes, Iâ€™d send you a blizzard.",         
-  "You are the reason I look down at my phone and smile.","I love you more than pizza. And I really love pizza.","You are my sunshine on a rainy day.",                     
-  "I want to be the reason behind your smile.","Every love story is beautiful, but ours is my favorite.","You stole my heart, but Iâ€™ll let you keep it.",                   
-  "Life is better with you.","I can't stop thinking about you today... tomorrow... forever.","You are the best thing that ever happened to me.",                          
-  "My favorite place is inside your hug.","When Iâ€™m with you, hours feel like seconds.","I looked at your face and my heart jumped all over the place.",                  
-  "You make my heart skip a beat.","Thinking of you is my favorite hobby.","You are my happy place.","I fall in love with you every single day.",                         
-    "Your smile is the cutest thing I've ever seen.","You are the peanut butter to my jelly.","I didnâ€™t choose you, my heart did.","I love you to the moon and back.",    
-    "You are my dream come true.","Forever is a long time, but I wouldn't mind spending it by your side.","You have no idea how fast my heart races when I see you.",     
-    "I want to grow old with you.","Just one look at you and I know it's gonna be a good day.","You are my today and all of my tomorrows.",                               
-    "I never want to stop making memories with you.","You are the missing piece to my puzzle."};local currentQuotes=quotesEN;local countryCode="Unknown";local success,   
-      result=pcall(function() return LocalizationService:GetCountryRegionForPlayerAsync(Player);end);if (success and (result=="VN")) then currentQuotes=quotesVN;print( 
-      "PhĂ¡t hiá»‡n ngÆ°á»i chÆ¡i tá»« Viá»‡t Nam. Sá»­ dá»¥ng tiáº¿ng Viá»‡t.");else currentQuotes=quotesEN;print("PhĂ¡t hiá»‡n ngÆ°á»i chÆ¡i quá»‘c táº¿ ("   .. tostring(result)   ..            
-      "). Sá»­ dá»¥ng tiáº¿ng Anh." );end math.randomseed(os.time());local randomMessage=currentQuotes[math.random(1, #currentQuotes)];if PlayerGui:FindFirstChild(           
-        "PinkLoveGui") then PlayerGui.PinkLoveGui:Destroy();end local gui=Instance.new("ScreenGui");gui.Name="PinkLoveGui";gui.IgnoreGuiInset=true;gui.ResetOnSpawn=    
-        false;gui.Parent=PlayerGui;local bg=Instance.new("Frame");bg.Name="Background";bg.Size=UDim2.fromScale(1,1);bg.BackgroundColor3=Color3.fromRGB(255,255,255);bg. 
-        Parent=gui;local gradient=Instance.new("UIGradient");gradient.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,182,193)),                
-          ColorSequenceKeypoint.new(1,Color3.fromRGB(255,105,180))});gradient.Rotation=45;gradient.Parent=bg;local textLabel=Instance.new("TextLabel");textLabel.     
-            AnchorPoint=Vector2.new(0.5,0.5);textLabel.Position=UDim2.fromScale(0.5,0.5);textLabel.Size=UDim2.fromScale(0.85,0.6);textLabel.BackgroundTransparency=1; 
-              textLabel.TextColor3=Color3.fromRGB(255,255,255);textLabel.Font=Enum.Font.GothamBold;textLabel.TextWrapped=true;textLabel.TextScaled=true;textLabel.    
-                TextTransparency=1;textLabel.Text=randomMessage;textLabel.Parent=bg;local stroke=Instance.new("UIStroke");stroke.Thickness=3;stroke.Color=Color3.     
-                  fromRGB(255,80,120);stroke.Transparency=1;stroke.Parent=textLabel;local closeBtn=Instance.new("TextButton");closeBtn.AnchorPoint=Vector2.new(1,0) 
-                      ;closeBtn.Position=UDim2.fromScale(0.95,0.05);closeBtn.Size=UDim2.fromScale(0.08,0.08);closeBtn.SizeConstraint=Enum.SizeConstraint.RelativeXX 
-                                  ;closeBtn.BackgroundColor3=Color3.fromRGB(255,255,255);closeBtn.TextColor3=Color3.fromRGB(255,100,100);closeBtn.Text="X";closeBtn 
-                                      .Font=Enum.Font.GothamBlack;closeBtn.TextScaled=true;closeBtn.Parent=bg;local corner=Instance.new("UICorner");corner.         
-                                      CornerRadius=UDim.new(1,0);corner.Parent=closeBtn;closeBtn.           MouseButton1Click:Connect(function() local fadeInfo=    
-                                      TweenInfo.new(0.5);TweenService:Create(bg,fadeInfo,{                  BackgroundTransparency=1}):Play();TweenService:Create 
-                                      (textLabel,fadeInfo,{TextTransparency=1}):Play();TweenService         :Create(stroke,fadeInfo,{Transparency=1}):Play();     
-                                      TweenService:Create(closeBtn,fadeInfo,{TextTransparency=1,            BackgroundTransparency=1}):Play();local musicCheck=   
-                                      SoundService:FindFirstChild("LoveMusic");if musicCheck then             TweenService:Create(musicCheck,TweenInfo.new(1),{   
-                                      Volume=0}):Play();task.delay(1,function() musicCheck:Stop();            end);end task.wait(0.5);gui:Destroy();end);local    
-                                      music=SoundService:FindFirstChild("LoveMusic") or Instance.             new("Sound") ;music.Name="LoveMusic";music.       
-                                        SoundId="rbxassetid://7453158420";music.Volume=0;music.               Looped=true;music.Parent=SoundService;music:Play( 
-                                        );TweenService:Create(music,TweenInfo.new(2),{Volume=1}):               Play();TweenService:Create(textLabel,TweenInfo. 
-                                        new(2),{TextTransparency=0}):Play();TweenService:Create(                stroke,TweenInfo.new(2),{Transparency=0}):    
-                                        Play();local icons={"â¤","đŸ’–","đŸ’•","đŸŒ¸","đŸ’Œ","âœ¨","đŸŒ¹","đŸ¦‹"               ,"đŸ’˜"};task.spawn(function() while gui.Parent 
-                                         do local particle=Instance.new("TextLabel");particle.                    Text=icons[math.random(1, #icons)];       
-                                        particle.Font=Enum.Font.GothamBold;particle.TextColor3=                   Color3.fromHSV(math.random(0.9,1),math.   
-                                          random(0.2,0.6),1);particle.TextScaled=true;particle.                     BackgroundTransparency=1;local        
-                                          sizeNum=math.random(4,9)/100 ;particle.Size=UDim2.                          fromScale(sizeNum,sizeNum);     
-                                            particle.Position=UDim2.fromScale(math.random(),1.1                         );particle.Rotation=math. 
-                                            random( -30,30);particle.Parent=bg;local speed=                                   math.random 
-                                              (4,8);local tween=TweenService:Create(        
-                                                particle,TweenInfo.new(speed,Enum.        
-                                                    EasingStyle.Linear),{Position=UDim2 
-                                                          .fromScale(particle.    
+--[[
+ .____                  ________ ___.    _____                           __                
+ |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
+ |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
+ |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
+ |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
+         \/          \/         \/    \/                \/     \/     \/                   
+          \_Welcome to LuaObfuscator.com   (Alpha 0.10.9) ~  Much Love, Ferib 
 
+]]--
 
-Position.X.Scale, -0.15),Rotation=math.random( -180,180),TextTransparency=1});tween:Play();Debris:AddItem(particle,speed);task.wait(math.random(1,4)/10 );end end);
+local TweenService = game:GetService("TweenService");
+local Debris = game:GetService("Debris");
+local Players = game:GetService("Players");
+local SoundService = game:GetService("SoundService");
+local LocalizationService = game:GetService("LocalizationService");
+local Player = Players.LocalPlayer;
+local PlayerGui = Player:WaitForChild("PlayerGui");
+local quotesVN = {"Anh không giỏi địa lý, nhưng anh biết vị trí của em là ở trong tim anh.","Trời đổ mưa rồi, sao em chưa đổ anh?","Em có bản đồ không? Anh bị lạc trong mắt em rồi.","Gọi em là Google, vì em có mọi thứ anh tìm kiếm.","Anh nghiện thuốc có thể cai, nhưng nghiện em thì không thể chữa.","Muốn ăn gạo thì trồng lúa, muốn có công chúa thì yêu em.","Em giống như một ly cà phê, vừa đắng vừa ngọt khiến anh mất ngủ.","Trăng lên đỉnh núi trăng tà, em yêu anh thật hay là yêu chơi?","Dự báo thời tiết nói hôm nay trời đẹp, nhưng không đẹp bằng nụ cười của em.","Anh học rất nhiều điều, nhưng chưa học cách ngừng nhớ em.","Muốn bắt cọp thì vào sở thú, muốn tìm chỗ trú thì vào tim anh.","Nhà em có bán rượu không? Mà nói chuyện với em anh say quá.","Đừng cười nữa, tim anh đập nhanh lắm rồi.","Nếu em là một bài hát, anh sẽ nghe đi nghe lại cả ngày.","Thế giới này to lớn thế, đi đâu cũng thấy bóng dáng em.","Em ơi gió lạnh gần kề, bao nhiêu lớp áo không bằng love anh.","Anh xin đầu hàng, vì nụ cười của em là vũ khí sát thương cao nhất.","Em có thấy mỏi chân không? Vì em chạy trong đầu anh cả ngày rồi.","Em là đám mây nhỏ, trên bầu trời to của anh.","Anh không thích cạnh tranh, nhưng nếu là em thì anh sẽ chiến đấu.","Trái đất quay quanh mặt trời, còn anh quay quanh em.","Anh thà làm một người bình thường bên em, còn hơn làm vua một cõi thiếu em.","Đừng đi tìm hạnh phúc xa xôi, anh ở ngay đây rồi.","Mượn xe nhớ đổ đầy bình, mượn tim nhớ đổ đầy tình cho anh.","Yêu em không phải là sai, mà là bài toán anh giải cả đời.","Em là mảnh ghép cuối cùng anh còn thiếu.","Thức khuya là vì công việc, nhưng mất ngủ là vì nhớ em.","Anh không hứa sẽ sang giàu, nhưng hứa sẽ yêu em bền lâu.","Em là nguồn động lực lớn nhất để anh cố gắng mỗi ngày.","Có rất nhiều cách để hạnh phúc, cách nhanh nhất là nhìn thấy em.","Anh không cần cả thế giới yêu anh, anh chỉ cần em thôi.","Em là vì sao sáng nhất trong đêm tối của anh.","Anh muốn mời em đi ăn tối, thực đơn là... anh.","Tim anh đang bật đèn xanh, sao em mãi đạp phanh thế này?","Anh không thích trà sữa, anh thích trà trộn vào tim em.","Em có biết bơi không? Anh sắp chìm trong ánh mắt em rồi.","Anh có một siêu năng lực, đó là siêu thích em.","Gặp em là duyên, yêu em là nợ, cưới em là nghiệp... tụ.","Em là ngọn hải đăng dẫn lối con thuyền tình anh.","Em ơi trà sữa phải có trân châu, đời anh phải có em đâu mới ngầu.","Thanh xuân như một tách trà, có em là đậm đà hương vị.","Em là lí do khiến anh cầm điện thoại mỗi sáng.","Yêu một người không khó, yêu em thì anh nguyện lo.","Em là bông hoa đẹp nhất trong vườn hoa đời anh.","Anh không giỏi văn, nhưng tả về em thì viết thành sách.","Em có thấy nóng không? Vì tim anh đang cháy vì em đấy.","Nếu nụ cười của em là ánh nắng, thì anh nguyện bị cháy nắng cả đời.","Anh không cần quà, vì có em là món quà lớn nhất rồi.","Trăm lối đi, chỉ muốn một lối về, là về bên em.","Em là cô gái vàng trong làng đánh cắp trái tim anh.","Anh không biết trộm cắp, nhưng anh muốn đánh cắp trái tim em.","Em là định mệnh của đời anh.","Anh muốn cùng em đi đến tận cùng thế giới.","Em là giấc mơ đẹp nhất anh không muốn tỉnh dậy.","Anh không sợ ma, anh chỉ sợ mất em.","Em là liều thuốc duy nhất chữa lành vết thương lòng anh.","Em cười một cái, mùa xuân quay về.","Anh không cần thiên đường, vì bên em đã là thiên đường.","Em là nốt nhạc vui trong bản nhạc buồn của anh.","Tình yêu anh dành cho em như sóng biển, lúc dịu êm lúc dữ dội nhưng không bao giờ ngừng.","Anh muốn nắm tay em đi qua mọi bão giông.","Em là cầu vồng sau cơn mưa của anh.","Anh không hứa sẽ không làm em khóc, nhưng hứa sẽ lau khô nước mắt cho em.","Em là viên ngọc quý giá nhất anh tìm thấy.","Anh muốn già đi cùng em.","Em là hơi thở của anh.","Tình yêu của chúng ta sẽ đẹp như một câu chuyện cổ tích.","Anh nguyện làm vệ sĩ bảo vệ em suốt đời.","Em là tất cả những gì anh cần.","Anh yêu em nhiều hơn lời nói.","Em là ánh sáng dẫn lối anh về nhà.","Anh muốn mỗi sáng thức dậy đều thấy em.","Em là món quà vô giá thượng đế ban tặng anh.","Anh sẽ mãi yêu em, dù vật đổi sao dời.","Em là nhịp đập của trái tim anh.","Anh muốn cùng em già đi, nuôi cá và trồng thêm rau.","Em là nàng thơ trong mọi bài thơ anh viết.","Anh yêu em từ cái nhìn đầu tiên và mãi mãi về sau.","Em là bến đỗ bình yên của đời anh.","Anh muốn cùng em viết nên câu chuyện tình đẹp nhất.","Em là điều tuyệt vời nhất anh từng có.","Anh sẽ luôn ở bên em, dù bất cứ chuyện gì xảy ra.","Em là người nắm giữ chìa khóa trái tim anh.","Yêu em là điều đúng đắn nhất anh từng làm.","Anh muốn dành cả phần đời còn lại để yêu em.","Em là thế giới của anh."};
+local quotesEN = {"I'm not a photographer, but I can picture us together.","Are you a magician? Because whenever I look at you, everyone else disappears.","Do you have a map? I keep getting lost in your eyes.","Is your name Google? Because you have everything I've been searching for.","I seem to have lost my phone number. Can I have yours?","Are you a campfire? Because you're hot and I want s'more.","Do you believe in love at first sight, or should I walk by again?","If I could rearrange the alphabet, I’d put 'U' and 'I' together.","You must be a broom, ‘cause you just swept me off my feet.","Are you a time traveler? Because I see you in my future.","Your hand looks heavy. Can I hold it for you?","If kisses were snowflakes, I’d send you a blizzard.","You are the reason I look down at my phone and smile.","I love you more than pizza. And I really love pizza.","You are my sunshine on a rainy day.","I want to be the reason behind your smile.","Every love story is beautiful, but ours is my favorite.","You stole my heart, but I’ll let you keep it.","Life is better with you.","I can't stop thinking about you today... tomorrow... forever.","You are the best thing that ever happened to me.","My favorite place is inside your hug.","When I’m with you, hours feel like seconds.","I looked at your face and my heart jumped all over the place.","You make my heart skip a beat.","Thinking of you is my favorite hobby.","You are my happy place.","I fall in love with you every single day.","Your smile is the cutest thing I've ever seen.","You are the peanut butter to my jelly.","I didn’t choose you, my heart did.","I love you to the moon and back.","You are my dream come true.","Forever is a long time, but I wouldn't mind spending it by your side.","You have no idea how fast my heart races when I see you.","I want to grow old with you.","Just one look at you and I know it's gonna be a good day.","You are my today and all of my tomorrows.","I never want to stop making memories with you.","You are the missing piece to my puzzle."};
+local currentQuotes = quotesEN;
+local countryCode = "Unknown";
+local success, result = pcall(function()
+	return LocalizationService:GetCountryRegionForPlayerAsync(Player);
+end);
+if (success and (result == "VN")) then
+	currentQuotes = quotesVN;
+	print("Phát hiện người chơi từ Việt Nam. Sử dụng tiếng Việt.");
+else
+	currentQuotes = quotesEN;
+	print("Phát hiện người chơi quốc tế (" .. tostring(result) .. "). Sử dụng tiếng Anh.");
+end
+math.randomseed(os.time());
+local randomMessage = currentQuotes[math.random(1, #currentQuotes)];
+if PlayerGui:FindFirstChild("PinkLoveGui") then
+	PlayerGui.PinkLoveGui:Destroy();
+end
+local gui = Instance.new("ScreenGui");
+gui.Name = "PinkLoveGui";
+gui.IgnoreGuiInset = true;
+gui.ResetOnSpawn = false;
+gui.Parent = PlayerGui;
+local bg = Instance.new("Frame");
+bg.Name = "Background";
+bg.Size = UDim2.fromScale(1, 1);
+bg.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
+bg.Parent = gui;
+local gradient = Instance.new("UIGradient");
+gradient.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 182, 193)),ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 105, 180))});
+gradient.Rotation = 45;
+gradient.Parent = bg;
+local textLabel = Instance.new("TextLabel");
+textLabel.AnchorPoint = Vector2.new(0.5, 0.5);
+textLabel.Position = UDim2.fromScale(0.5, 0.5);
+textLabel.Size = UDim2.fromScale(0.85, 0.6);
+textLabel.BackgroundTransparency = 1;
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255);
+textLabel.Font = Enum.Font.GothamBold;
+textLabel.TextWrapped = true;
+textLabel.TextScaled = true;
+textLabel.TextTransparency = 1;
+textLabel.Text = randomMessage;
+textLabel.Parent = bg;
+local stroke = Instance.new("UIStroke");
+stroke.Thickness = 3;
+stroke.Color = Color3.fromRGB(255, 80, 120);
+stroke.Transparency = 1;
+stroke.Parent = textLabel;
+local closeBtn = Instance.new("TextButton");
+closeBtn.AnchorPoint = Vector2.new(1, 0);
+closeBtn.Position = UDim2.fromScale(0.95, 0.05);
+closeBtn.Size = UDim2.fromScale(0.08, 0.08);
+closeBtn.SizeConstraint = Enum.SizeConstraint.RelativeXX;
+closeBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255);
+closeBtn.TextColor3 = Color3.fromRGB(255, 100, 100);
+closeBtn.Text = "X";
+closeBtn.Font = Enum.Font.GothamBlack;
+closeBtn.TextScaled = true;
+closeBtn.Parent = bg;
+local corner = Instance.new("UICorner");
+corner.CornerRadius = UDim.new(1, 0);
+corner.Parent = closeBtn;
+closeBtn.MouseButton1Click:Connect(function()
+	local fadeInfo = TweenInfo.new(0.5);
+	TweenService:Create(bg, fadeInfo, {BackgroundTransparency=1}):Play();
+	TweenService:Create(textLabel, fadeInfo, {TextTransparency=1}):Play();
+	TweenService:Create(stroke, fadeInfo, {Transparency=1}):Play();
+	TweenService:Create(closeBtn, fadeInfo, {TextTransparency=1,BackgroundTransparency=1}):Play();
+	local musicCheck = SoundService:FindFirstChild("LoveMusic");
+	if musicCheck then
+		TweenService:Create(musicCheck, TweenInfo.new(1), {Volume=0}):Play();
+		task.delay(1, function()
+			musicCheck:Stop();
+		end);
+	end
+	task.wait(0.5);
+	gui:Destroy();
+end);
+local music = SoundService:FindFirstChild("LoveMusic") or Instance.new("Sound");
+music.Name = "LoveMusic";
+music.SoundId = "rbxassetid://7453158420";
+music.Volume = 0;
+music.Looped = true;
+music.Parent = SoundService;
+music:Play();
+TweenService:Create(music, TweenInfo.new(2), {Volume=1}):Play();
+TweenService:Create(textLabel, TweenInfo.new(2), {TextTransparency=0}):Play();
+TweenService:Create(stroke, TweenInfo.new(2), {Transparency=0}):Play();
+local icons = {"❤","💖","💕","🌸","💌","✨","🌹","🦋","💘"};
+task.spawn(function()
+	while gui.Parent do
+		local particle = Instance.new("TextLabel");
+		particle.Text = icons[math.random(1, #icons)];
+		particle.Font = Enum.Font.GothamBold;
+		particle.TextColor3 = Color3.fromHSV(math.random(0.9, 1), math.random(0.2, 0.6), 1);
+		particle.TextScaled = true;
+		particle.BackgroundTransparency = 1;
+		local sizeNum = math.random(4, 9) / 100;
+		particle.Size = UDim2.fromScale(sizeNum, sizeNum);
+		particle.Position = UDim2.fromScale(math.random(), 1.1);
+		particle.Rotation = math.random(-30, 30);
+		particle.Parent = bg;
+		local speed = math.random(4, 8);
+		local tween = TweenService:Create(particle, TweenInfo.new(speed, Enum.EasingStyle.Linear), {Position=UDim2.fromScale(particle.Position.X.Scale, -0.15),Rotation=math.random(-180, 180),TextTransparency=1});
+		tween:Play();
+		Debris:AddItem(particle, speed);
+		task.wait(math.random(1, 4) / 10);
+	end
+end);
