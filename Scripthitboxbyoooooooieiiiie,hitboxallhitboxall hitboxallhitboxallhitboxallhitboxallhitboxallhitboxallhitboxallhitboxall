@@ -1,0 +1,176 @@
+--[[
+ .____                  ________ ___.    _____                           __                
+ |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
+ |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
+ |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
+ |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
+         \/          \/         \/    \/                \/     \/     \/                   
+          \_Welcome to LuaObfuscator.com   (Alpha 0.10.9) ~  Much Love, Ferib 
+
+]]--
+
+local Players = game:GetService("Players");
+local RunService = game:GetService("RunService");
+local TweenService = game:GetService("TweenService");
+local LocalPlayer = Players.LocalPlayer;
+_G.HeadSize = 10;
+_G.Disabled = true;
+_G.TeamCheck = false;
+_G.TargetPart = "HumanoidRootPart";
+local ScreenGui = Instance.new("ScreenGui");
+local MainFrame = Instance.new("Frame");
+local FrameCorner = Instance.new("UICorner");
+local SizeInput = Instance.new("TextBox");
+local InputCorner = Instance.new("UICorner");
+local ToggleButton = Instance.new("TextButton");
+local ToggleCorner = Instance.new("UICorner");
+local MinimizeButton = Instance.new("TextButton");
+local MinimizeCorner = Instance.new("UICorner");
+local TitleLabel = Instance.new("TextLabel");
+if (syn and syn.protect_gui) then
+	syn.protect_gui(ScreenGui);
+end
+ScreenGui.Name = "HitboxV6_Rainbow";
+ScreenGui.Parent = game:GetService("CoreGui");
+ScreenGui.ResetOnSpawn = false;
+MainFrame.Name = "MainFrame";
+MainFrame.Parent = ScreenGui;
+MainFrame.Size = UDim2.new(0, 180, 0, 125);
+MainFrame.Position = UDim2.new(0.5, -90, 0.5, -60);
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30);
+MainFrame.BorderSizePixel = 0;
+MainFrame.Active = true;
+MainFrame.Draggable = true;
+MainFrame.ClipsDescendants = true;
+FrameCorner.CornerRadius = UDim.new(0, 8);
+FrameCorner.Parent = MainFrame;
+TitleLabel.Parent = MainFrame;
+TitleLabel.Size = UDim2.new(1, -30, 0, 25);
+TitleLabel.Position = UDim2.new(0, 10, 0, 0);
+TitleLabel.BackgroundTransparency = 1;
+TitleLabel.Text = "Hitbox";
+TitleLabel.TextColor3 = Color3.new(1, 1, 1);
+TitleLabel.TextSize = 16;
+TitleLabel.Font = Enum.Font.GothamBlack;
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left;
+MinimizeButton.Parent = MainFrame;
+MinimizeButton.Size = UDim2.new(0, 25, 0, 25);
+MinimizeButton.Position = UDim2.new(1, -25, 0, 0);
+MinimizeButton.Text = "-";
+MinimizeButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50);
+MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255);
+MinimizeCorner.CornerRadius = UDim.new(0, 4);
+MinimizeCorner.Parent = MinimizeButton;
+SizeInput.Parent = MainFrame;
+SizeInput.Size = UDim2.new(0, 160, 0, 30);
+SizeInput.Position = UDim2.new(0, 10, 0, 35);
+SizeInput.Text = tostring(_G.HeadSize);
+SizeInput.PlaceholderText = "Nhập Size (VD: 10)";
+SizeInput.BackgroundColor3 = Color3.fromRGB(50, 50, 60);
+SizeInput.TextColor3 = Color3.fromRGB(255, 255, 255);
+SizeInput.Font = Enum.Font.SourceSansBold;
+SizeInput.TextSize = 16;
+InputCorner.CornerRadius = UDim.new(0, 6);
+InputCorner.Parent = SizeInput;
+ToggleButton.Parent = MainFrame;
+ToggleButton.Size = UDim2.new(0, 160, 0, 40);
+ToggleButton.Position = UDim2.new(0, 10, 0, 75);
+ToggleButton.Text = "Trạng thái: TẮT";
+ToggleButton.BackgroundColor3 = Color3.fromRGB(200, 60, 60);
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255);
+ToggleButton.Font = Enum.Font.GothamBold;
+ToggleButton.TextSize = 16;
+ToggleCorner.CornerRadius = UDim.new(0, 6);
+ToggleCorner.Parent = ToggleButton;
+local function isValidTarget(plr)
+	if (plr == LocalPlayer) then
+		return false;
+	end
+	if (_G.TeamCheck and (plr.Team == LocalPlayer.Team)) then
+		return false;
+	end
+	if not plr.Character then
+		return false;
+	end
+	local hum = plr.Character:FindFirstChild("Humanoid");
+	local part = plr.Character:FindFirstChild(_G.TargetPart);
+	if (not hum or not part) then
+		return false;
+	end
+	if (hum.Health <= 0) then
+		return false;
+	end
+	return true;
+end
+local function resetHitbox()
+	for _, plr in pairs(Players:GetPlayers()) do
+		if (plr.Character and plr.Character:FindFirstChild(_G.TargetPart)) then
+			local part = plr.Character[_G.TargetPart];
+			part.Size = Vector3.new(2, 2, 1);
+			part.Transparency = 1;
+			part.CanCollide = true;
+			part.BrickColor = BrickColor.new("Medium stone grey");
+			part.Material = Enum.Material.Plastic;
+		end
+	end
+end
+SizeInput.FocusLost:Connect(function()
+	local num = tonumber(SizeInput.Text);
+	if num then
+		_G.HeadSize = num;
+	else
+		SizeInput.Text = tostring(_G.HeadSize);
+	end
+end);
+ToggleButton.MouseButton1Click:Connect(function()
+	_G.Disabled = not _G.Disabled;
+	if _G.Disabled then
+		ToggleButton.Text = "Trạng thái: TẮT";
+		ToggleButton.BackgroundColor3 = Color3.fromRGB(200, 60, 60);
+		resetHitbox();
+	else
+		ToggleButton.Text = "Trạng thái: BẬT";
+		ToggleButton.BackgroundColor3 = Color3.fromRGB(60, 200, 60);
+	end
+end);
+local minimized = false;
+MinimizeButton.MouseButton1Click:Connect(function()
+	minimized = not minimized;
+	if minimized then
+		MainFrame:TweenSize(UDim2.new(0, 180, 0, 25), "Out", "Quad", 0.3, true);
+		SizeInput.Visible = false;
+		ToggleButton.Visible = false;
+		MinimizeButton.Text = "+";
+	else
+		MainFrame:TweenSize(UDim2.new(0, 180, 0, 125), "Out", "Quad", 0.3, true);
+		SizeInput.Visible = true;
+		ToggleButton.Visible = true;
+		MinimizeButton.Text = "-";
+	end
+end);
+task.spawn(function()
+	while task.wait() do
+		local hue = (tick() % 5) / 5;
+		local color = Color3.fromHSV(hue, 1, 1);
+		if TitleLabel then
+			TitleLabel.TextColor3 = color;
+		end
+	end
+end);
+RunService.RenderStepped:Connect(function()
+	if not _G.Disabled then
+		local targetSize = Vector3.new(_G.HeadSize, _G.HeadSize, _G.HeadSize);
+		for _, plr in pairs(Players:GetPlayers()) do
+			if isValidTarget(plr) then
+				local part = plr.Character[_G.TargetPart];
+				if (part.Size ~= targetSize) then
+					part.Size = targetSize;
+					part.CanCollide = false;
+					part.Transparency = 0.7;
+					part.BrickColor = BrickColor.new("Really red");
+					part.Material = Enum.Material.Neon;
+				end
+			end
+		end
+	end
+end);
